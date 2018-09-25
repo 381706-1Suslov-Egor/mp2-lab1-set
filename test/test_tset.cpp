@@ -295,3 +295,8 @@ TEST(TSet, check_negation_operator)
 
   EXPECT_EQ(expSet, set1);
 }
+TEST(MathTest, DISABLED_two_plus_two_equals_four)
+{
+	int x = 2 + 2;
+	EXPECT_EQ(4, x);
+}
