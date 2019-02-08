@@ -9,80 +9,122 @@
 
 TSet::TSet(int mp) : BitField(-1)
 {
+	max = mp;
 }
 
 // конструктор копирования
 TSet::TSet(const TSet &s) : BitField(-1)
 {
+	max = s.max;
 }
 
 // конструктор преобразования типа
 TSet::TSet(const TBitField &bf) : BitField(-1)
 {
+	max = bf.GetLength();
 }
 
 TSet::operator TBitField()
 {
+	return BitField;
 }
 
 int TSet::GetMaxPower(void) const // получить макс. к-во эл-тов
 {
+	return max;
 }
 
 int TSet::IsMember(const int Elem) const // элемент множества?
 {
-    return 0;
+	if (BitField.GetBit(Elem)) return 1;
+	else return false;
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
+	BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
 {
+	BitField.ClrBit(Elem);
 }
 
 // теоретико-множественные операции
 
 TSet& TSet::operator=(const TSet &s) // присваивание
 {
+	BitField = s.BitField;
+	max = s.max;
+
+	return *this;
 }
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    return 0;
+	if (BitField == s.BitField)
+		return 1;
+	else return 0;
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
+	if (max != s.max)
+		return 1;
+	else if (BitField != s.BitField)
+		return 1;
+	else return 0;
 }
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
+	return TSet(BitField | s.BitField);
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
+	TSet tmp(*this);
+	tmp.BitField.SetBit(Elem);
+	return tmp;
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом
 {
+	TSet tmp(*this);
+	tmp.BitField.ClrBit(Elem);
+	return tmp;
 }
 
 TSet TSet::operator*(const TSet &s) // пересечение
 {
+	return TSet(BitField & s.BitField);
 }
 
 TSet TSet::operator~(void) // дополнение
 {
+	return TSet(~BitField);
 }
+
 
 // перегрузка ввода/вывода
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
+	int num;
+	istr >> num;
+	while ((num >= 0) && (num < s.max))
+	{
+		s.InsElem(num);
+		istr >> num;
+
+
+	}
+	return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+	for (int i = 0; i < s.max; i++)
+		if (s.IsMember(i)) ostr << i << " ";
+	return ostr;
 }
